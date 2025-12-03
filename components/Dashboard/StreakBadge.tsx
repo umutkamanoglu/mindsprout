@@ -1,4 +1,3 @@
-import React from 'react'
 import { Flame } from 'lucide-react'
 import CountUp from 'react-countup'
 
@@ -15,6 +14,7 @@ function StreakBadge({ days }: StreakBadgeProps) {
                 start={0}
                 end={10}
                 className='font-semibold text-orange-700'
+                suffix=' gün'
             />
         </div>
     )
