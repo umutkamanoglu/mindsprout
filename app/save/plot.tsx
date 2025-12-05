@@ -121,6 +121,7 @@ export default function Home() {
     const three1 = createTree(4.5, 0, 1)
 
     scene.add(three1)
+    scene.add(createTree(-3, -2, 0.5))
 
 
     function animate() {

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import {
     Brain,
     Mail,
@@ -41,16 +42,16 @@ export default function SignupPage() {
     ];
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 flex items-center justify-center p-4 py-12">
+        <div className="min-h-screen bg-linear-to-br from-emerald-50 via-teal-50 to-cyan-50 flex items-center justify-center p-4 py-12">
             <div className="w-full max-w-6xl grid lg:grid-cols-2 gap-8 items-center">
 
                 {/* Sol Panel - Bilgi/Özellikler */}
                 <div className="hidden lg:flex flex-col justify-center space-y-8 p-12">
                     <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center">
+                        <div className="w-12 h-12 bg-linear-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center">
                             <Brain className="w-7 h-7 text-white" />
                         </div>
-                        <span className="text-3xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+                        <span className="text-3xl font-bold bg-linear-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
                             Mindsprout
                         </span>
                     </div>
@@ -67,7 +68,7 @@ export default function SignupPage() {
                     {/* Özellik Kartları */}
                     <div className="space-y-4">
                         <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-6 border border-emerald-100 flex items-start gap-4">
-                            <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center shrink-0">
                                 <Sparkles className="w-6 h-6 text-emerald-600" />
                             </div>
                             <div>
@@ -77,17 +78,17 @@ export default function SignupPage() {
                         </div>
 
                         <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-6 border border-teal-100 flex items-start gap-4">
-                            <div className="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <div className="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center shrink-0">
                                 <Target className="w-6 h-6 text-teal-600" />
                             </div>
                             <div>
-                                <h3 className="font-bold text-gray-900 mb-1">15x15m Arsa</h3>
+                                <h3 className="font-bold text-gray-900 mb-1">Özelleştirilebilir Arsa</h3>
                                 <p className="text-sm text-gray-600">Kendi 3D dünyanı oluşturmaya başla.</p>
                             </div>
                         </div>
 
                         <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-6 border border-cyan-100 flex items-start gap-4">
-                            <div className="w-12 h-12 bg-cyan-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <div className="w-12 h-12 bg-cyan-100 rounded-xl flex items-center justify-center shrink-0">
                                 <Trophy className="w-6 h-6 text-cyan-600" />
                             </div>
                             <div>
@@ -108,10 +109,10 @@ export default function SignupPage() {
                 <div className="bg-white rounded-3xl shadow-2xl p-8 lg:p-12 border border-emerald-100 max-h-[90vh] overflow-y-auto">
                     {/* Mobile Logo */}
                     <div className="lg:hidden flex items-center justify-center gap-2 mb-8">
-                        <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center">
+                        <div className="w-10 h-10 bg-linear-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center">
                             <Brain className="w-6 h-6 text-white" />
                         </div>
-                        <span className="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+                        <span className="text-2xl font-bold bg-linear-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
                             Mindsprout
                         </span>
                     </div>
@@ -158,7 +159,7 @@ export default function SignupPage() {
                                     type="text"
                                     value={formData.fullName}
                                     onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                                    placeholder="Ahmet Yılmaz"
+                                    placeholder="Ad Soyad"
                                     className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 transition-all outline-none"
                                 />
                             </div>
@@ -177,7 +178,7 @@ export default function SignupPage() {
                                     type="text"
                                     value={formData.username}
                                     onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                                    placeholder="ahmetyilmaz"
+                                    placeholder="kullaniciadi"
                                     className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 transition-all outline-none"
                                 />
                             </div>
@@ -196,7 +197,7 @@ export default function SignupPage() {
                                     type="email"
                                     value={formData.email}
                                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                    placeholder="ahmet@email.com"
+                                    placeholder="ornek@email.com"
                                     className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 transition-all outline-none"
                                 />
                             </div>
@@ -300,7 +301,7 @@ export default function SignupPage() {
                         <button
                             onClick={handleSubmit}
                             disabled={!agreedToTerms}
-                            className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 text-white py-3.5 rounded-xl font-semibold hover:shadow-lg hover:scale-[1.02] transition-all flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                            className="w-full cursor-pointer bg-linear-to-r from-emerald-500 to-teal-500 text-white py-3.5 rounded-xl font-semibold hover:shadow-lg hover:scale-[1.02] transition-all flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                         >
                             Hesap Oluştur
                             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -311,9 +312,12 @@ export default function SignupPage() {
                     <div className="mt-6 text-center">
                         <p className="text-gray-600">
                             Zaten hesabın var mı?{' '}
-                            <a href="#" className="font-semibold text-emerald-600 hover:text-emerald-700">
+                            <Link
+                                href="/login"
+                                className="font-semibold text-emerald-600 hover:text-emerald-700"
+                            >
                                 Giriş Yap
-                            </a>
+                            </Link>
                         </p>
                     </div>
 

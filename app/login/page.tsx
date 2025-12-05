@@ -1,6 +1,7 @@
 'use client';
-
 import { useState } from 'react';
+import Link from 'next/link';
+import CountUp from 'react-countup';
 import {
     Brain,
     Mail,
@@ -49,11 +50,21 @@ export default function LoginPage() {
 
                     <div className="grid grid-cols-2 gap-4">
                         <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-6 border border-emerald-100">
-                            <div className="text-4xl font-bold text-emerald-600 mb-2">10K+</div>
+                            <CountUp
+                                start={0}
+                                end={10}
+                                className='text-4xl font-bold text-emerald-600 mb-2'
+                                suffix='K+'
+                            />
                             <div className="text-sm text-gray-600">Aktif Kullanıcı</div>
                         </div>
                         <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-6 border border-emerald-100">
-                            <div className="text-4xl font-bold text-teal-600 mb-2">500K+</div>
+                            <CountUp
+                                start={0}
+                                end={500}
+                                className='text-4xl font-bold text-teal-600 mb-2'
+                                suffix='K+'
+                            />
                             <div className="text-sm text-gray-600">Tamamlanan Seans</div>
                         </div>
                     </div>
@@ -82,16 +93,16 @@ export default function LoginPage() {
                     </div>
 
                     <div className="mb-8">
-                        <h2 className="text-3xl font-bold text-gray-900 mb-2">Giriş Yap</h2>
+                        <h2 className="text-3xl cursor-pointer font-bold text-gray-900 mb-2">Giriş Yap</h2>
                         <p className="text-gray-600">Hesabına erişim sağla ve odaklanmaya başla</p>
                     </div>
 
                     <div className="space-y-3 mb-6">
-                        <button className="w-full flex items-center justify-center gap-3 bg-white border-2 border-gray-200 rounded-xl py-3 hover:border-emerald-300 hover:bg-emerald-50/50 transition-all group">
+                        <button className="w-full cursor-pointer flex items-center justify-center gap-3 bg-white border-2 border-gray-200 rounded-xl py-3 hover:border-emerald-300 hover:bg-emerald-50/50 transition-all group">
                             <Chrome className="w-5 h-5 text-gray-700 group-hover:text-emerald-600" />
                             <span className="font-semibold text-gray-700 group-hover:text-emerald-600">Google ile Devam Et</span>
                         </button>
-                        <button className="w-full flex items-center justify-center gap-3 bg-white border-2 border-gray-200 rounded-xl py-3 hover:border-gray-400 hover:bg-gray-50 transition-all group">
+                        <button className="w-full cursor-pointer flex items-center justify-center gap-3 bg-white border-2 border-gray-200 rounded-xl py-3 hover:border-gray-400 hover:bg-gray-50 transition-all group">
                             <Github className="w-5 h-5 text-gray-700" />
                             <span className="font-semibold text-gray-700">GitHub ile Devam Et</span>
                         </button>
@@ -180,9 +191,12 @@ export default function LoginPage() {
                     <div className="mt-6 text-center">
                         <p className="text-gray-600">
                             Hesabın yok mu?{' '}
-                            <a href="#" className="font-semibold text-emerald-600 hover:text-emerald-700">
+                            <Link
+                                href="/register"
+                                className="font-semibold text-emerald-600 hover:text-emerald-700"
+                            >
                                 Hemen Kayıt Ol
-                            </a>
+                            </Link>
                         </p>
                     </div>
 
