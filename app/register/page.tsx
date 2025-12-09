@@ -1,7 +1,7 @@
 'use client';
-
 import { useState } from 'react';
 import Link from 'next/link';
+import axios from 'axios';
 import {
     Brain,
     Mail,
@@ -17,6 +17,8 @@ import {
     Target,
     Trophy
 } from 'lucide-react';
+import { ToastContainer } from 'react-toastify';
+import { Alert } from '@/lib/alert';
 
 export default function SignupPage() {
     const [showPassword, setShowPassword] = useState(false);
@@ -30,8 +32,37 @@ export default function SignupPage() {
     });
     const [agreedToTerms, setAgreedToTerms] = useState(false);
 
-    const handleSubmit = () => {
-        console.log('Signup:', formData);
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+
+        const form = new FormData()
+        form.append('username', formData.username)
+        form.append('fullname', formData.fullName)
+        form.append('email', formData.email)
+        form.append('password', formData.password)
+        form.append('confirmPassword', formData.confirmPassword)
+
+        axios({
+            method: 'POST',
+            url: '/api/createUser',
+            data: form
+        }).then(response => {
+            if (response.data.status == "success") {
+                Alert(
+                    {
+                        message: "Hesabınız başarıyla oluşturuldu! Giriş yapabilirsiniz.",
+                        type: "success"
+                    }
+                )
+            } else {
+                Alert(
+                    {
+                        message: response.data.message,
+                        type: "error"
+                    }
+                )
+            }
+        })
     };
 
     const passwordRequirements = [
@@ -123,7 +154,7 @@ export default function SignupPage() {
                     </div>
 
                     {/* Social Signup Buttons */}
-                    <div className="space-y-3 mb-6">
+                    {/* <div className="space-y-3 mb-6">
                         <button className="w-full flex items-center justify-center gap-3 bg-white border-2 border-gray-200 rounded-xl py-3 hover:border-emerald-300 hover:bg-emerald-50/50 transition-all group">
                             <Chrome className="w-5 h-5 text-gray-700 group-hover:text-emerald-600" />
                             <span className="font-semibold text-gray-700 group-hover:text-emerald-600">Google ile Kayıt Ol</span>
@@ -132,20 +163,24 @@ export default function SignupPage() {
                             <Github className="w-5 h-5 text-gray-700" />
                             <span className="font-semibold text-gray-700">GitHub ile Kayıt Ol</span>
                         </button>
-                    </div>
+                    </div> */}
 
                     {/* Divider */}
-                    <div className="relative mb-6">
+                    {/* <div className="relative mb-6">
                         <div className="absolute inset-0 flex items-center">
                             <div className="w-full border-t border-gray-200"></div>
                         </div>
                         <div className="relative flex justify-center text-sm">
                             <span className="px-4 bg-white text-gray-500">veya email ile</span>
                         </div>
-                    </div>
+                    </div> */}
 
                     {/* Signup Form */}
-                    <div className="space-y-4">
+                    <form
+                        action=""
+                        onSubmit={e => handleSubmit(e)}
+                        className="space-y-4"
+                    >
                         {/* Full Name */}
                         <div>
                             <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -306,7 +341,7 @@ export default function SignupPage() {
                             Hesap Oluştur
                             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                         </button>
-                    </div>
+                    </form>
 
                     {/* Login Link */}
                     <div className="mt-6 text-center">
@@ -340,6 +375,7 @@ export default function SignupPage() {
                     </div>
                 </div>
             </div>
+            <ToastContainer />
         </div>
     );
 }
