@@ -3,7 +3,13 @@ import StreakBadge from './StreakBadge'
 import Logo from '../Logo'
 import UserSection from './UserSection'
 
-function Header() {
+interface HeaderProps {
+    userNameShort: string;
+    userName: string;
+    userEmail: string;
+}
+
+function Header({ userNameShort, userName, userEmail }: HeaderProps) {
     return (
         <header
             className='bg-white h-20 border border-x-0 border-t-0 border-gray-200 flex items-center justify-between p-[2vw]'
@@ -15,10 +21,12 @@ function Header() {
                 <UserSection
                     level={5}
                     progress={65}
-                    userNameShort="JD"
+                    userNameShort={userNameShort}
+                    userName={userName}
+                    userEmail={userEmail}
                 />
             </div>
-        </header >
+        </header>
     )
 }
 

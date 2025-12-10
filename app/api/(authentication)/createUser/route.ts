@@ -13,30 +13,81 @@ export async function POST(request: NextRequest) {
         const confirmPassword = formData.get("confirmPassword") as string;
         const fullname = formData.get("fullname") as string;
 
+        // Validasyon kontrolleri
+        if (!username || !email || !password) {
+            return NextResponse.json({
+                status: "fail",
+                message: "Kullanıcı adı, email ve şifre gereklidir."
+            }, { status: 400 });
+        }
+
+        if (password !== confirmPassword) {
+            return NextResponse.json({
+                status: "fail",
+                message: "Şifreler eşleşmiyor."
+            }, { status: 400 });
+        }
+
+        // Kullanıcı adı kontrolü
         const checkUser = await prisma.users.findFirst({
             where: {
                 username
             }
-        })
+        });
 
         if (checkUser) {
-            return NextResponse.json({ status: "fail", message: "Kullanıcı adı mevcut." });
+            return NextResponse.json({
+                status: "fail",
+                message: "Kullanıcı adı mevcut."
+            }, { status: 400 });
         }
 
-        const encryptedPassword = await bcrypt.hash(crypto.createHash("sha256").update(password).digest("hex"), 10);
+        // Email kontrolü (NextAuth için önemli - email unique olmalı)
+        const checkEmail = await prisma.users.findFirst({
+            where: {
+                email
+            }
+        });
+
+        if (checkEmail) {
+            return NextResponse.json({
+                status: "fail",
+                message: "Bu email adresi zaten kullanılıyor."
+            }, { status: 400 });
+        }
+
+        // Şifreyi hash'le
+        const encryptedPassword = await bcrypt.hash(
+            crypto.createHash("sha256").update(password).digest("hex"),
+            10
+        );
 
         const newUser = await prisma.users.create({
             data: {
                 username,
-                fullname,
+                fullname: fullname || null,
                 email,
                 password: encryptedPassword
             }
-        })
+        });
 
-        return NextResponse.json({ status: "success", message: "Kullanıcı başarıyla oluşturuldu.", data: newUser });
+        // Hassas bilgileri döndürme
+        return NextResponse.json({
+            status: "success",
+            message: "Kullanıcı başarıyla oluşturuldu.",
+            data: {
+                id: newUser.id,
+                username: newUser.username,
+                email: newUser.email,
+                fullname: newUser.fullname
+            }
+        }, { status: 201 });
 
     } catch (error) {
-        return NextResponse.json({ status: "fail", message: "an error occurred", error: error });
+        console.error("Kullanıcı oluşturma hatası:", error);
+        return NextResponse.json({
+            status: "fail",
+            message: "Bir hata oluştu."
+        }, { status: 500 });
     }
 }
