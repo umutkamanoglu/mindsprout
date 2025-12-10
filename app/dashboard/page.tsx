@@ -2,6 +2,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
 import Header from '@/components/Dashboard/Header';
+import TimerCard from "@/components/Dashboard/TimerCard";
 
 export default async function Page() {
     const session = await getServerSession(authOptions);
@@ -27,6 +28,14 @@ export default async function Page() {
                 userName={userName}
                 userEmail={session.user?.email || ""}
             />
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div className="grid grid-cols-1 gap-6">
+                    <div className="lg:col-span-1 space-y-6">
+
+                        <TimerCard />
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }
