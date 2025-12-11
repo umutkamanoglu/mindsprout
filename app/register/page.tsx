@@ -1,5 +1,7 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import axios from 'axios';
 import {
@@ -21,6 +23,8 @@ import { ToastContainer } from 'react-toastify';
 import { Alert } from '@/lib/alert';
 
 export default function SignupPage() {
+    const { data: session, status } = useSession();
+    const router = useRouter();
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [formData, setFormData] = useState({
@@ -31,9 +35,38 @@ export default function SignupPage() {
         confirmPassword: ''
     });
     const [agreedToTerms, setAgreedToTerms] = useState(false);
+    const [loading, setLoading] = useState(false);
+
+    // Eğer oturum varsa dashboard'a yönlendir
+    useEffect(() => {
+        if (status === "authenticated") {
+            router.push("/dashboard");
+        }
+    }, [status, router]);
+
+    // Yükleniyor durumu
+    if (status === "loading") {
+        return (
+            <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 flex items-center justify-center">
+                <div className="text-center">
+                    <div className="w-16 h-16 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                    <p className="text-gray-600 font-medium">Kontrol ediliyor...</p>
+                </div>
+            </div>
+        );
+    }
+
+    // Eğer oturum varsa hiçbir şey gösterme (yönlendirme yapılıyor)
+    if (status === "authenticated") {
+        return null;
+    }
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+
+        if (loading) return;
+
+        setLoading(true);
 
         const form = new FormData()
         form.append('username', formData.username)
@@ -54,6 +87,10 @@ export default function SignupPage() {
                         type: "success"
                     }
                 )
+                // 2 saniye sonra login sayfasına yönlendir
+                setTimeout(() => {
+                    router.push('/login');
+                }, 2000);
             } else {
                 Alert(
                     {
@@ -62,6 +99,15 @@ export default function SignupPage() {
                     }
                 )
             }
+        }).catch(error => {
+            Alert(
+                {
+                    message: "Bir hata oluştu. Lütfen tekrar deneyin.",
+                    type: "error"
+                }
+            )
+        }).finally(() => {
+            setLoading(false);
         })
     };
 
@@ -73,16 +119,16 @@ export default function SignupPage() {
     ];
 
     return (
-        <div className="min-h-screen bg-linear-to-br from-emerald-50 via-teal-50 to-cyan-50 flex items-center justify-center p-4 py-12">
+        <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 flex items-center justify-center p-4 py-12">
             <div className="w-full max-w-6xl grid lg:grid-cols-2 gap-8 items-center">
 
                 {/* Sol Panel - Bilgi/Özellikler */}
                 <div className="hidden lg:flex flex-col justify-center space-y-8 p-12">
                     <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 bg-linear-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center">
+                        <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center">
                             <Brain className="w-7 h-7 text-white" />
                         </div>
-                        <span className="text-3xl font-bold bg-linear-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+                        <span className="text-3xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
                             Mindsprout
                         </span>
                     </div>
@@ -140,10 +186,10 @@ export default function SignupPage() {
                 <div className="bg-white rounded-3xl shadow-2xl p-8 lg:p-12 border border-emerald-100 max-h-[90vh] overflow-y-auto">
                     {/* Mobile Logo */}
                     <div className="lg:hidden flex items-center justify-center gap-2 mb-8">
-                        <div className="w-10 h-10 bg-linear-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center">
+                        <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center">
                             <Brain className="w-6 h-6 text-white" />
                         </div>
-                        <span className="text-2xl font-bold bg-linear-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+                        <span className="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
                             Mindsprout
                         </span>
                     </div>
@@ -153,32 +199,9 @@ export default function SignupPage() {
                         <p className="text-gray-600">Ücretsiz hesabınla hemen başla</p>
                     </div>
 
-                    {/* Social Signup Buttons */}
-                    {/* <div className="space-y-3 mb-6">
-                        <button className="w-full flex items-center justify-center gap-3 bg-white border-2 border-gray-200 rounded-xl py-3 hover:border-emerald-300 hover:bg-emerald-50/50 transition-all group">
-                            <Chrome className="w-5 h-5 text-gray-700 group-hover:text-emerald-600" />
-                            <span className="font-semibold text-gray-700 group-hover:text-emerald-600">Google ile Kayıt Ol</span>
-                        </button>
-                        <button className="w-full flex items-center justify-center gap-3 bg-white border-2 border-gray-200 rounded-xl py-3 hover:border-gray-400 hover:bg-gray-50 transition-all group">
-                            <Github className="w-5 h-5 text-gray-700" />
-                            <span className="font-semibold text-gray-700">GitHub ile Kayıt Ol</span>
-                        </button>
-                    </div> */}
-
-                    {/* Divider */}
-                    {/* <div className="relative mb-6">
-                        <div className="absolute inset-0 flex items-center">
-                            <div className="w-full border-t border-gray-200"></div>
-                        </div>
-                        <div className="relative flex justify-center text-sm">
-                            <span className="px-4 bg-white text-gray-500">veya email ile</span>
-                        </div>
-                    </div> */}
-
                     {/* Signup Form */}
                     <form
-                        action=""
-                        onSubmit={e => handleSubmit(e)}
+                        onSubmit={handleSubmit}
                         className="space-y-4"
                     >
                         {/* Full Name */}
@@ -195,7 +218,9 @@ export default function SignupPage() {
                                     value={formData.fullName}
                                     onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
                                     placeholder="Ad Soyad"
-                                    className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 transition-all outline-none"
+                                    disabled={loading}
+                                    className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 transition-all outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+                                    required
                                 />
                             </div>
                         </div>
@@ -214,7 +239,9 @@ export default function SignupPage() {
                                     value={formData.username}
                                     onChange={(e) => setFormData({ ...formData, username: e.target.value })}
                                     placeholder="kullaniciadi"
-                                    className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 transition-all outline-none"
+                                    disabled={loading}
+                                    className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 transition-all outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+                                    required
                                 />
                             </div>
                         </div>
@@ -233,7 +260,9 @@ export default function SignupPage() {
                                     value={formData.email}
                                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                     placeholder="ornek@email.com"
-                                    className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 transition-all outline-none"
+                                    disabled={loading}
+                                    className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 transition-all outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+                                    required
                                 />
                             </div>
                         </div>
@@ -252,10 +281,14 @@ export default function SignupPage() {
                                     value={formData.password}
                                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                                     placeholder="••••••••"
-                                    className="w-full pl-12 pr-12 py-3 border-2 border-gray-200 rounded-xl focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 transition-all outline-none"
+                                    disabled={loading}
+                                    className="w-full pl-12 pr-12 py-3 border-2 border-gray-200 rounded-xl focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 transition-all outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+                                    required
                                 />
                                 <button
+                                    type="button"
                                     onClick={() => setShowPassword(!showPassword)}
+                                    disabled={loading}
                                     className="absolute inset-y-0 right-0 pr-4 flex items-center"
                                 >
                                     {showPassword ? (
@@ -298,10 +331,14 @@ export default function SignupPage() {
                                     value={formData.confirmPassword}
                                     onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
                                     placeholder="••••••••"
-                                    className="w-full pl-12 pr-12 py-3 border-2 border-gray-200 rounded-xl focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 transition-all outline-none"
+                                    disabled={loading}
+                                    className="w-full pl-12 pr-12 py-3 border-2 border-gray-200 rounded-xl focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 transition-all outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+                                    required
                                 />
                                 <button
+                                    type="button"
                                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                    disabled={loading}
                                     className="absolute inset-y-0 right-0 pr-4 flex items-center"
                                 >
                                     {showConfirmPassword ? (
@@ -323,6 +360,7 @@ export default function SignupPage() {
                                     type="checkbox"
                                     checked={agreedToTerms}
                                     onChange={(e) => setAgreedToTerms(e.target.checked)}
+                                    disabled={loading}
                                     className="w-5 h-5 text-emerald-600 border-gray-300 rounded focus:ring-emerald-500 mt-0.5"
                                 />
                                 <span className="text-sm text-gray-700">
@@ -334,12 +372,21 @@ export default function SignupPage() {
 
                         {/* Submit Button */}
                         <button
-                            onClick={handleSubmit}
-                            disabled={!agreedToTerms}
-                            className="w-full cursor-pointer bg-linear-to-r from-emerald-500 to-teal-500 text-white py-3.5 rounded-xl font-semibold hover:shadow-lg hover:scale-[1.02] transition-all flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                            type="submit"
+                            disabled={!agreedToTerms || loading}
+                            className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 text-white py-3.5 rounded-xl font-semibold hover:shadow-lg hover:scale-[1.02] transition-all flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                         >
-                            Hesap Oluştur
-                            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                            {loading ? (
+                                <>
+                                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                    Hesap Oluşturuluyor...
+                                </>
+                            ) : (
+                                <>
+                                    Hesap Oluştur
+                                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                                </>
+                            )}
                         </button>
                     </form>
 

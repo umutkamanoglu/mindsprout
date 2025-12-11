@@ -1,6 +1,6 @@
 "use client";
-import { useState } from "react";
-import { signIn } from "next-auth/react";
+import { useState, useEffect } from "react";
+import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import CountUp from "react-countup";
@@ -17,13 +17,38 @@ import {
 } from "lucide-react";
 
 export default function LoginPage() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
+
+  // Eğer oturum varsa dashboard'a yönlendir
+  useEffect(() => {
+    if (status === "authenticated") {
+      router.push("/dashboard");
+    }
+  }, [status, router]);
+
+  // Yükleniyor durumu
+  if (status === "loading") {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600 font-medium">Kontrol ediliyor...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Eğer oturum varsa hiçbir şey gösterme (yönlendirme yapılıyor)
+  if (status === "authenticated") {
+    return null;
+  }
 
   const handleSubmit = async () => {
     if (!email || !password) {
@@ -45,7 +70,7 @@ export default function LoginPage() {
         setError("Email veya şifre hatalı. Lütfen tekrar deneyin.");
       } else {
         // Başarılı giriş
-        router.push("/dashboard"); // veya istediğiniz sayfaya yönlendirin
+        router.push("/dashboard");
         router.refresh();
       }
     } catch (error) {
@@ -64,15 +89,15 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-emerald-50 via-teal-50 to-cyan-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 flex items-center justify-center p-4">
       <div className="w-full max-w-6xl grid lg:grid-cols-2 gap-8 items-center">
         {/* Sol Panel - Bilgi/Görsel */}
         <div className="hidden lg:flex flex-col justify-center space-y-8 p-12">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-linear-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center">
+            <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center">
               <Brain className="w-7 h-7 text-white" />
             </div>
-            <span className="text-3xl font-bold bg-linear-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+            <span className="text-3xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
               Mindsprout
             </span>
           </div>
@@ -109,7 +134,7 @@ export default function LoginPage() {
           </div>
 
           <div className="relative">
-            <div className="w-full h-64 bg-linear-to-br from-emerald-500/20 to-teal-500/20 rounded-3xl flex items-center justify-center backdrop-blur-sm border border-emerald-200">
+            <div className="w-full h-64 bg-gradient-to-br from-emerald-500/20 to-teal-500/20 rounded-3xl flex items-center justify-center backdrop-blur-sm border border-emerald-200">
               <div className="text-center">
                 <Leaf className="w-24 h-24 text-emerald-600 mx-auto mb-4" />
                 <p className="text-gray-700 font-semibold">
@@ -125,10 +150,10 @@ export default function LoginPage() {
         {/* Sağ Panel - Giriş Formu */}
         <div className="bg-white rounded-3xl shadow-2xl p-8 lg:p-12 border border-emerald-100">
           <div className="lg:hidden flex items-center justify-center gap-2 mb-8">
-            <div className="w-10 h-10 bg-linear-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center">
+            <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center">
               <Brain className="w-6 h-6 text-white" />
             </div>
-            <span className="text-2xl font-bold bg-linear-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+            <span className="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
               Mindsprout
             </span>
           </div>
@@ -250,7 +275,7 @@ export default function LoginPage() {
             <button
               onClick={handleSubmit}
               disabled={loading}
-              className="w-full bg-linear-to-r from-emerald-500 to-teal-500 text-white py-3.5 rounded-xl font-semibold hover:shadow-lg hover:scale-[1.02] transition-all flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+              className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 text-white py-3.5 rounded-xl font-semibold hover:shadow-lg hover:scale-[1.02] transition-all flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
             >
               {loading ? (
                 <>
@@ -292,6 +317,6 @@ export default function LoginPage() {
           </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 }
