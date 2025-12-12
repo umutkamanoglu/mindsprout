@@ -1,8 +1,21 @@
-import HeroBadge from './HeroBadge'
+"use client"
+import { useEffect } from 'react'
+import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Play, LogIn, ChevronDown } from 'lucide-react'
+import HeroBadge from './HeroBadge'
+import { Play, LogIn, ChevronDown, LoaderCircle } from 'lucide-react'
 
 function Hero() {
+
+    const { data: session, status } = useSession();
+    const router = useRouter();
+
+    useEffect(() => {
+        console.log(status)
+        // authenticated , loading, unauthenticated
+    }, [status, router]);
+
     return (
         <section
             className='h-[calc(100vh-5rem)] flex flex-col items-center justify-center max-w-7xl mx-auto px-4 relative'
@@ -23,20 +36,43 @@ function Hero() {
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
-                <Link
-                    href="/register"
-                    className="bg-linear-to-r from-emerald-500 to-teal-500 text-white px-8 py-4 rounded-xl font-semibold hover:shadow-2xl transition-all flex items-center gap-2 text-lg w-full sm:w-auto"
-                >
-                    <Play className="w-5 h-5" />
-                    Hemen Kullanmaya Başla
-                </Link>
-                <Link
-                    href="/login"
-                    className="bg-white text-gray-700 px-8 py-4 rounded-xl font-semibold hover:shadow-lg transition-all flex items-center gap-2 text-lg border-2 border-gray-200 w-full sm:w-auto"
-                >
-                    <LogIn className="w-5 h-5" />
-                    Giriş Yap
-                </Link>
+                {status === 'loading' && (
+                    <button
+                        className="bg-linear-to-r from-emerald-500 cursor-pointer to-teal-500 text-white px-8 py-4 rounded-xl font-semibold hover:shadow-2xl transition-all flex items-center gap-2 text-lg w-full sm:w-auto"
+                        disabled
+                    >
+                        <LoaderCircle className='w-5 h-5 animate-spin' />Yükleniyor...
+                    </button>
+                )}
+
+                {status === 'unauthenticated' && (
+                    <>
+                        <Link
+                            href="/register"
+                            className="bg-linear-to-r from-emerald-500 to-teal-500 text-white px-8 py-4 rounded-xl font-semibold hover:shadow-2xl transition-all flex items-center gap-2 text-lg w-full sm:w-auto"
+                        >
+                            <Play className="w-5 h-5" />
+                            Hemen Kullanmaya Başla
+                        </Link>
+                        <Link
+                            href="/login"
+                            className="bg-white text-gray-700 px-8 py-4 rounded-xl font-semibold hover:shadow-lg transition-all flex items-center gap-2 text-lg border-2 border-gray-200 w-full sm:w-auto"
+                        >
+                            <LogIn className="w-5 h-5" />
+                            Giriş Yap
+                        </Link>
+                    </>
+                )}
+
+                {status === 'authenticated' && (
+                    <Link
+                        href="/dashboard"
+                        className="bg-linear-to-r from-emerald-500 cursor-pointer to-teal-500 text-white px-8 py-4 rounded-xl font-semibold hover:shadow-2xl transition-all flex items-center gap-2 text-lg w-full sm:w-auto"
+                    >
+                        <Play className="w-5 h-5" />
+                        Panel'e Git
+                    </Link>
+                )}
             </div>
 
             <ChevronDown className="w-14 h-14 text-gray-400 animate-bounce absolute bottom-6" />
