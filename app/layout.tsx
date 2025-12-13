@@ -22,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${montserrat.variable} antialiased h-screen select-none`}
+        className={`${montserrat.variable} antialiased h-screen`}
       >
         <Providers>{children}</Providers>
       </body>

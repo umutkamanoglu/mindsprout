@@ -54,14 +54,14 @@ function UserSection({ level, progress, userNameShort, userName, userEmail }: Us
                         </div>
 
                         <button
-                            className="w-full text-left px-4 py-2.5 hover:bg-gray-50 flex items-center gap-3 text-gray-700 transition-colors"
+                            className="w-full cursor-pointer text-left px-4 py-2.5 hover:bg-gray-50 flex items-center gap-3 text-gray-700 transition-colors"
                         >
                             <User className="w-4 h-4" />
                             Profil
                         </button>
 
                         <button
-                            className="w-full text-left px-4 py-2.5 hover:bg-gray-50 flex items-center gap-3 text-gray-700 transition-colors"
+                            className="w-full cursor-pointer text-left px-4 py-2.5 hover:bg-gray-50 flex items-center gap-3 text-gray-700 transition-colors"
                         >
                             <Settings className="w-4 h-4" />
                             Ayarlar
@@ -70,7 +70,7 @@ function UserSection({ level, progress, userNameShort, userName, userEmail }: Us
                         <div className="border-t border-gray-100 mt-2 pt-2">
                             <button
                                 onClick={handleLogout}
-                                className="w-full text-left px-4 py-2.5 hover:bg-red-50 flex items-center gap-3 text-red-600 transition-colors"
+                                className="w-full cursor-pointer text-left px-4 py-2.5 hover:bg-red-50 flex items-center gap-3 text-red-600 transition-colors"
                             >
                                 <LogOut className="w-4 h-4" />
                                 Çıkış Yap
